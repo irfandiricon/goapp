@@ -48,5 +48,5 @@ ircn/
 ### Clone the Repository
 
 ```sh
-git clone https://github.com/yourusername/ircn.git
+git clone https://github.com/irfandiricon/goapp.git
 cd ircn
