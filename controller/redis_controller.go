@@ -2,8 +2,8 @@ package controller
 
 import (
 	"encoding/json"
-	"ircn/database"
-	"ircn/model"
+	"go-fiber/database"
+	"go-fiber/model"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
