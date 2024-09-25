@@ -1,10 +1,10 @@
 package main
 
 import (
-	"ircn/controller"
-	"ircn/database"
-	"ircn/model"
-	"ircn/routes"
+	"go-fiber/controller"
+	"go-fiber/database"
+	"go-fiber/model"
+	"go-fiber/routes"
 	"log"
 	"os"
 
@@ -24,14 +24,18 @@ func main() {
 	app.Use(recover.New())
 
 	db := database.ConnectDB()
+	redisClient := database.ConnectRedis()
+
 	db.AutoMigrate(&model.Users{})
 
 	authController := &controller.AuthController{DB: db}
 	userController := &controller.UserController{DB: db}
+	redisController := &controller.RedisController{DB: db, RedisClient: redisClient}
 	routeConfig := &routes.RouteConfig{
-		App:            app,
-		AuthController: authController,
-		UserController: userController,
+		App:             app,
+		AuthController:  authController,
+		UserController:  userController,
+		RedisController: redisController,
 	}
 
 	routeConfig.Setup()

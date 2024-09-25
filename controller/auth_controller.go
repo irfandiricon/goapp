@@ -3,7 +3,7 @@ package controller
 import (
 	"time"
 
-	"ircn/model"
+	"go-fiber/model"
 
 	"gorm.io/gorm"
 

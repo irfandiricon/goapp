@@ -1,8 +1,8 @@
-# IrCn (Example App GO)
+# go-fiber (Example App GO)
 
 ## Introduction
 
-IRCN is a web application built with Go and Fiber that provides user authentication, profile management, and more. It uses MySQL for the database and JWT for authentication.
+go-fiber is a web application built with Go and Fiber that provides user authentication, profile management, and more. It uses MySQL for the database and JWT for authentication.
 
 ## Features
 
@@ -15,7 +15,7 @@ IRCN is a web application built with Go and Fiber that provides user authenticat
 
 ## Project Structure
 
-ircn/
+go-fiber/
 ├── controller/
 │   ├── auth_controller.go
 │   ├── user_controller.go
@@ -49,4 +49,4 @@ ircn/
 
 ```sh
 git clone https://github.com/irfandiricon/goapp.git
-cd ircn
+cd go-fiber

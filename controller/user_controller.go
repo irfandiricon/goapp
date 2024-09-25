@@ -1,15 +1,17 @@
 package controller
 
 import (
-	"ircn/model"
+	"go-fiber/model"
 	"strconv"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
 
 type UserController struct {
-	DB *gorm.DB
+	DB          *gorm.DB
+	RedisClient *redis.Client
 }
 
 func (uc *UserController) Profile(ctx *fiber.Ctx) error {
