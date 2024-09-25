@@ -16,7 +16,7 @@ type UserController struct {
 
 func (uc *UserController) Profile(ctx *fiber.Ctx) error {
 	// Get the user ID from the context and ensure it's an int
-	userID, ok := ctx.Locals("userID").(int)
+	userID, ok := ctx.Locals("id").(int)
 	if !ok {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"status":  fiber.StatusUnauthorized,
