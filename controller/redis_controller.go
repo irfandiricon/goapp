@@ -71,15 +71,16 @@ func (uc *RedisController) SyncUserToRedis(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"status":  fiber.StatusOK,
-		"message": "Users saved to Redis",
+		"message": "success",
 	})
 }
 
 func (uc *RedisController) SetUserToRedis(c *fiber.Ctx) error {
 	userID := c.Params("id")
 
-	var user model.Users
-	if err := uc.DB.First(&user, userID).Error; err != nil {
+	var user model.UsersRedis
+
+	if err := uc.DB.Model(&model.Users{}).Select("ID", "Name", "Email").First(&user, userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 				"status":  fiber.StatusNotFound,
@@ -100,7 +101,7 @@ func (uc *RedisController) SetUserToRedis(c *fiber.Ctx) error {
 		})
 	}
 
-	err = uc.RedisClient.Set(c.Context(), userID, userJSON, 0).Err()
+	err = database.SetKey(c.Context(), "Profile", userJSON)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  fiber.StatusInternalServerError,
@@ -111,6 +112,5 @@ func (uc *RedisController) SetUserToRedis(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"status":  fiber.StatusOK,
 		"message": "success",
-		"data":    userJSON,
 	})
 }

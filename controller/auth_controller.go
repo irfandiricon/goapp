@@ -117,9 +117,9 @@ func (lc *AuthController) Login(ctx *fiber.Ctx) error {
 	}
 
 	claims := jwt.MapClaims{
-		"user_id": user.ID,
-		"email":   loginRequest.Email,
-		"exp":     time.Now().Add(time.Hour * 72).Unix(), // Token expires after 72 hours.
+		"id":    user.ID,
+		"email": loginRequest.Email,
+		"exp":   time.Now().Add(time.Hour * 72).Unix(), // Token expires after 72 hours.
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
