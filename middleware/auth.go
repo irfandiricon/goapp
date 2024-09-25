@@ -33,8 +33,8 @@ func AuthMiddleware() fiber.Handler {
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			if userID, ok := claims["user_id"].(float64); ok {
-				c.Locals("userID", int(userID))
+			if userID, ok := claims["id"].(float64); ok {
+				c.Locals("id", int(userID))
 			} else {
 				return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 					"status":  fiber.StatusUnauthorized,
