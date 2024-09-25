@@ -1,4 +1,4 @@
-module ircn
+module go-fiber
 
 go 1.23.1
 

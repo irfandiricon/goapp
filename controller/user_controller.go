@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"ircn/model"
+	"go-fiber/model"
 	"strconv"
 
 	"github.com/go-redis/redis/v8"

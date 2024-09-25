@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"ircn/controller"
-	"ircn/middleware"
+	"go-fiber/controller"
+	"go-fiber/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"ircn/controller"
-	"ircn/database"
-	"ircn/model"
-	"ircn/routes"
+	"go-fiber/controller"
+	"go-fiber/database"
+	"go-fiber/model"
+	"go-fiber/routes"
 	"log"
 	"os"
 
