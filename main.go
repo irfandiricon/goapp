@@ -5,6 +5,7 @@ import (
 	"go-fiber/database"
 	"go-fiber/model"
 	"go-fiber/routes"
+	"go-fiber/utils"
 	"log"
 	"os"
 
@@ -37,6 +38,8 @@ func main() {
 		UserController:  userController,
 		RedisController: redisController,
 	}
+
+	utils.InitializeCronJob(redisController)
 
 	routeConfig.Setup()
 
