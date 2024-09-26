@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"encoding/json"
 	"go-fiber/database"
 	"go-fiber/model"
@@ -16,7 +17,7 @@ type RedisController struct {
 }
 
 func (uc *RedisController) GetUsers(ctx *fiber.Ctx) error {
-	val, err := database.GetKey(ctx.Context(), "Users")
+	val, err := database.GetKey(ctx.Context(), "users")
 	if err == redis.Nil {
 		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"status":  fiber.StatusNotFound,
@@ -44,34 +45,37 @@ func (uc *RedisController) GetUsers(ctx *fiber.Ctx) error {
 	})
 }
 
-func (uc *RedisController) SyncUserToRedis(c *fiber.Ctx) error {
+func (uc *RedisController) SyncUserToRedisSync() error {
 	var users []model.UsersRedis
 
 	if err := uc.DB.Model(&model.Users{}).Select("ID", "Name", "Email").Scan(&users).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  fiber.StatusInternalServerError,
-			"message": "Failed to fetch user",
-		})
+		return err
 	}
 
 	userJSON, err := json.Marshal(users)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  fiber.StatusInternalServerError,
-			"message": "Failed to encode user data",
-		})
+		return err
 	}
 
-	if err := database.SetKey(c.Context(), "Users", userJSON); err != nil {
+	if err := database.SetKey(context.Background(), "users", userJSON); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// SyncUserToRedis handles the HTTP request
+func (uc *RedisController) SyncUserToRedis(c *fiber.Ctx) error {
+	if err := uc.SyncUserToRedisSync(); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  fiber.StatusInternalServerError,
-			"message": "Failed to connect to Redis",
+			"message": "Failed to synchronize user data.",
 		})
 	}
 
 	return c.JSON(fiber.Map{
 		"status":  fiber.StatusOK,
-		"message": "success",
+		"message": "User data synchronized successfully.",
 	})
 }
 
@@ -101,7 +105,7 @@ func (uc *RedisController) SetUserToRedis(c *fiber.Ctx) error {
 		})
 	}
 
-	err = database.SetKey(c.Context(), "Profile", userJSON)
+	err = database.SetKey(c.Context(), "profile", userJSON)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  fiber.StatusInternalServerError,

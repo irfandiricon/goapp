@@ -1,6 +1,10 @@
 package model
 
 import (
+	"encoding/json"
+	"fmt"
+	"go-fiber/database"
+	"log"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -18,7 +22,6 @@ type Users struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
-
 type LoginUser struct {
 	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"required"`
@@ -43,4 +46,22 @@ func (user *Users) HashPassword(password string) error {
 // CheckPassword checks if the provided password matches the hashed password.
 func (user *Users) CheckPassword(password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+}
+
+func (user *Users) AfterUpdate(tx *gorm.DB) (err error) {
+	// Convert user data to JSON
+	userJSON, err := json.Marshal(user)
+	if err != nil {
+		log.Println("Error marshalling user data:", err)
+		return
+	}
+
+	// Set the updated user in Redis
+	if err := database.SetKey(tx.Statement.Context, "users:"+fmt.Sprint(user.ID), userJSON); err != nil {
+		log.Println("Error setting user in Redis:", err)
+		return err
+	}
+
+	log.Println("User updated and synced to Redis:", user.ID)
+	return nil
 }
